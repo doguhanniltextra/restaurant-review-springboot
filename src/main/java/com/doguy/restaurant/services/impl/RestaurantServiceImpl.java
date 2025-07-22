@@ -2,6 +2,7 @@ package com.doguy.restaurant.services.impl;
 
 
 import com.doguy.restaurant.domain.entities.*;
+import com.doguy.restaurant.exceptions.RestaurantNotFoundException;
 import com.doguy.restaurant.repositories.RestaurantRepository;
 import com.doguy.restaurant.services.GeoLocationService;
 import com.doguy.restaurant.services.RestaurantService;
@@ -76,4 +77,32 @@ public class RestaurantServiceImpl implements RestaurantService {
         Optional<Restaurant> byId = restaurantRepository.findById(id);
         return byId;
     }
+
+    @Override
+    public Restaurant updateRestaurant(String id, RestaurantCreateUpdateRequest request) {
+        Restaurant restaurant = getRestaurant(id)
+                .orElseThrow(() -> new RestaurantNotFoundException("Restaurant with ID does not exist: " + id));
+
+        GeoLocation newGeoLocation = geoLocationService.geoLocate(request.getAddress());
+
+        GeoPoint newGeoPoint = new GeoPoint(newGeoLocation.getLatitude(), newGeoLocation.getLatitude());
+
+
+        List<String> photoIds = request.getPhotoIds();
+        List<Photo> photos = photoIds.stream().map(photoUrl -> Photo.builder()
+                .url(photoUrl)
+                .uploadDate(LocalDateTime.now())
+                .build()).toList();
+
+        restaurant.setName(request.getName());
+        restaurant.setCuisineType(request.getCuisineType());
+        restaurant.setContactInformation(request.getContentInformation());
+        restaurant.setAddress(request.getAddress());
+        restaurant.setGeoLocation(newGeoPoint);
+        restaurant.setOperatingHours(request.getOperatingHours());
+        restaurant.setPhotos(photos);
+
+        return restaurantRepository.save(restaurant);
+    }
+
 }
