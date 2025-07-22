@@ -63,4 +63,10 @@ public class RestaurantController {
                 .map(restaurant -> ResponseEntity.ok(restaurantMapper.toRestaurantDto(restaurant)))
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping(path = "/{restaurant_id")
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable("restaurant_id") String  restaurant_id){
+         restaurantService.deleteRestaurant(restaurant_id);
+         return ResponseEntity.noContent().build();
+    }
 }

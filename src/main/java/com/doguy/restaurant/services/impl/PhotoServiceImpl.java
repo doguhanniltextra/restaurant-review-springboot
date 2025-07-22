@@ -18,10 +18,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final StorageService storageService;
 
-    public PhotoServiceImpl(StorageService storageService) {
-        this.storageService = storageService;
-    }
-
     @Override
     public Photo uploadPhoto(MultipartFile file) {
        String photoId =  UUID.randomUUID().toString();

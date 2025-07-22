@@ -19,4 +19,13 @@ public class TimeRange {
 
     @Field(type = FieldType.Keyword)
     private String closeTime;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class GeoLocation {
+        private Double latitude;
+        private Double longitude;
+    }
 }

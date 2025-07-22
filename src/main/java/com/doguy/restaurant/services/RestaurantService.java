@@ -4,6 +4,7 @@ import com.doguy.restaurant.domain.entities.Restaurant;
 import com.doguy.restaurant.domain.entities.RestaurantCreateUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -23,4 +24,6 @@ public interface RestaurantService {
     Optional<Restaurant> getRestaurant(String id);
 
     Restaurant updateRestaurant(String id, RestaurantCreateUpdateRequest restaurantCreateUpdateRequest);
+
+    ResponseEntity<Void> deleteRestaurant(String id);
 }

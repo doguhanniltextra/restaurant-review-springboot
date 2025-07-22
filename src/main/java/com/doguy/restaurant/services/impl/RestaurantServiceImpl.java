@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -103,6 +104,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setPhotos(photos);
 
         return restaurantRepository.save(restaurant);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteRestaurant(String id) {
+        restaurantRepository.deleteById(id);
+        return null;
     }
 
 }
