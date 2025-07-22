@@ -2,6 +2,7 @@ package com.doguy.restaurant.controllers;
 
 import com.doguy.restaurant.domain.dto.ErrorDto;
 import com.doguy.restaurant.exceptions.BaseException;
+import com.doguy.restaurant.exceptions.RestaurantNotFoundException;
 import com.doguy.restaurant.exceptions.StorageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @ControllerAdvice
 @Slf4j
 public class ErrorController {
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleRestaurantNotFoundException(RestaurantNotFoundException ex ){
+        log.error("Caught RestaurantNotFoundException", ex);
+
+        ErrorDto build = ErrorDto.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message("The specified restaurant wasn't found")
+                .build();
+        return new ResponseEntity<>(build, HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ErrorDto> handleStorageException(StorageException ex) {
