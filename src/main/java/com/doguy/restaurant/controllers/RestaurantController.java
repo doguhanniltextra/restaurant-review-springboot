@@ -2,17 +2,17 @@ package com.doguy.restaurant.controllers;
 
 import com.doguy.restaurant.domain.dto.RestaurantCreateUpdateRequestDto;
 import com.doguy.restaurant.domain.dto.RestaurantDto;
+import com.doguy.restaurant.domain.dto.RestaurantSummaryDto;
 import com.doguy.restaurant.domain.entities.Restaurant;
 import com.doguy.restaurant.domain.entities.RestaurantCreateUpdateRequest;
 import com.doguy.restaurant.mappers.RestaurantMapper;
 import com.doguy.restaurant.services.RestaurantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/restaurants")
@@ -37,5 +37,23 @@ public class RestaurantController {
 
     }
 
+    @GetMapping
+    public Page<RestaurantSummaryDto> searchRestaurants(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) Float minRating,
+            @RequestParam(required = false) Float latitude,
+            @RequestParam(required = false) Float longitude,
+            @RequestParam(required = false) Float radius,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue= "20") int size
+
+    ) {
+        Page<Restaurant> searchResults = restaurantService.searchRestaurant(
+                q, minRating, latitude,
+                longitude, radius, PageRequest.of(page - 1, size)
+        );
+
+    return searchResults.map(restaurantMapper:: toSummaryDto);
+    }
 
 }
